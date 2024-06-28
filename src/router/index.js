@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-const files = import.meta.glob('/src/pages/learnThree/*.vue', {eager: true})
+const files = import.meta.glob('/src/pages/*/*.vue', {eager: true})
 const routes = Object.keys(files).map(path => {
   const fileName = path.split('/').pop().replace(/\.vue$/, '')
   return {
