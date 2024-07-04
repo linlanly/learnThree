@@ -3,17 +3,12 @@ import * as THREE from 'three'
 import * as Stats from 'stats.js'
 import { GUI } from "three/addons/libs/lil-gui.module.min.js"
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Projector } from 'three/addons/renderers/Projector.js';
 import * as chroma from 'chroma-js';
-let scene, camera, renderer, stats
+let scene, camera, renderer, stats, meshes = []
 let physicsWorld, transformAux, scale = chroma.scale(['white', 'blue', 'red', 'yellow']);
 const gravityConstant = -9.8, quat = new THREE.Quaternion(), textureLoader = new THREE.TextureLoader()
-const rigidBodies = [], mouseCoords = new THREE.Vector2(), raycaster = new THREE.Raycaster()
-const clock = new THREE.Clock(), projector = new Projector(), meshs = []
-const doorLimit = {
-  min: -2.2,
-  max: 2.6
-}
+const rigidBodies = []
+const clock = new THREE.Clock()
 
 Ammo().then(function (AmmoLib) {
   Ammo = AmmoLib
@@ -44,7 +39,7 @@ function initGraphics() {
   const light = new THREE.DirectionalLight(0xffffff, 3)
   light.position.set(-7, 10, 15)
   light.castShadow = true
-  const d = 10
+  const d = 100
   light.shadow.camera.left = light.shadow.camera.bottom = -d
   light.shadow.camera.right = light.shadow.camera.top = d
   light.shadow.camera.near = 2
@@ -70,9 +65,10 @@ function initGraphics() {
     const flippperRightConstraint = createRightFlipper()
     const sliderBottomConstraint = createSilderBottom()
     const sliderTopConstraint = createSilderTop()
-    // const coneTwistConstraint = createConeTwist()
-    // const point2point = createPointToPoint(true)
+    const coneTwistConstraint = createConeTwist()
+    const point2point = createPointToPoint()
 
+    let removeDistance = 0
     const guiOption = {
       enableMotor: false,
       acceleration: 40,
@@ -82,35 +78,42 @@ function initGraphics() {
       motorTargetX: 0,
       motorTargetY: 0,
       motorTargetZ: 0,
-      // updateCone() {
-      //   if (guiOption.enableConeTwistMotor) {
-      //     coneTwistConstraint.enableMotor()
-      //     coneTwistConstraint.setMotorTarget(new THREE.Vector3(guiOption.motorTargetX, guiOption.motorTargetY, guiOption.motorTargetZ))
-      //   } else {
-      //     coneTwistConstraint.disableMotor()
-      //   }
-      // },
-      updateMotor() {
-          flipperLeftConstraint.enableAngularMotor(true, !guiOption.enableMotor ? 0 : guiOption.velocity, guiOption.acceleration)
-          flippperRightConstraint.enableAngularMotor(true, !guiOption.enableMotor ? 0 : -guiOption.velocity, guiOption.acceleration)
+      updateCone() {
+        if (guiOption.enableConeTwistMotor) {
+          coneTwistConstraint.enableMotor(true)
+          coneTwistConstraint.setMotorTargetInConstraintSpace(new Ammo.btQuaternion(guiOption.motorTargetX, guiOption.motorTargetY, guiOption.motorTargetZ, 1))
+
+          coneTwistConstraint.setLimit(1, 2)
+          coneTwistConstraint.setMaxMotorImpulseNormalized(1)
+          coneTwistConstraint.setBreakingImpulseThreshold(5)
+          coneTwistConstraint.setParam(0, 1, 2)
+        } else {
+          coneTwistConstraint.enableMotor(false)
+        }
       },
-      // sliderLeft() {
-      //   sliderBottomConstraint.disableLinearMotor()
-      //   sliderBottomConstraint.enableLinearMotor(guiOption.velocity, guiOption.acceleration)
-      //   sliderTopConstraint.disableLinearMotor()
-      //   sliderTopConstraint.enableLinearMotor(guiOption.velocity, guiOption.acceleration)
-      // },
-      // sliderRight() {
-      //   sliderBottomConstraint.disableLinearMotor()
-      //   sliderBottomConstraint.enableLinearMotor(-guiOption.velocity, guiOption.acceleration)
-      //   sliderTopConstraint.disableLinearMotor()
-      //   sliderTopConstraint.enableLinearMotor(-guiOption.velocity, guiOption.acceleration)
-      // },
-      clearMeshs() {
-        meshs.forEach(mesh => {
+      updateMotor() {
+        flipperLeftConstraint.enableAngularMotor(true, !guiOption.enableMotor ? 0 : guiOption.velocity, guiOption.acceleration)
+        flippperRightConstraint.enableAngularMotor(true, !guiOption.enableMotor ? 0 : -guiOption.velocity, guiOption.acceleration)
+      },
+      sliderLeft() {
+        removeDistance += 4
+        sliderBottomConstraint.setUpperLinLimit(removeDistance)
+        sliderBottomConstraint.setLowerLinLimit(removeDistance)
+        sliderTopConstraint.setUpperLinLimit(removeDistance)
+        sliderTopConstraint.setLowerLinLimit(removeDistance)
+      },
+      sliderRight() {
+        removeDistance -= 4
+        sliderBottomConstraint.setUpperLinLimit(removeDistance)
+        sliderBottomConstraint.setLowerLinLimit(removeDistance)
+        sliderTopConstraint.setUpperLinLimit(removeDistance)
+        sliderTopConstraint.setLowerLinLimit(removeDistance)
+      },
+      clearMeshes() {
+        meshes.forEach(mesh => {
           scene.remove(mesh)
         })
-        meshs = []
+        meshes = []
       },
       addSpheres() {
         const colorSphere = scale(Math.random()).hex()
@@ -138,21 +141,21 @@ function initGraphics() {
     const hingeFolder = gui.addFolder('hinge')
     hingeFolder.add(guiOption, 'enableMotor').onChange(guiOption.updateMotor)
 
-    // const sliderFolder = gui.addFolder('sliders')
-    // ['sliderLeft', 'sliderRight'].forEach(key => {
-    //   sliderFolder.add(guiOption, key).onChange(guiOption[key])
-    // })
+    const sliderFolder = gui.addFolder('sliders');
+    ['sliderLeft', 'sliderRight'].forEach(key => {
+      sliderFolder.add(guiOption, key).onChange(guiOption[key])
+    })
 
-    // const coneTwistFolder = gui.addFolder('coneTwist')
-    // coneTwistFolder.add(guiOption, 'enableConeTwistMotor').onChange(guiOption.updateCone);
-    // ['motorTargetX', 'motorTargetY', 'motorTargetZ'].forEach(key => {
-    //   coneTwistFolder.add(guiOption, key, -Math.PI / 2, Math.PI / 2).onChange(guiOption.updateCone)
-    // })
+    const coneTwistFolder = gui.addFolder('coneTwist')
+    coneTwistFolder.add(guiOption, 'enableConeTwistMotor').onChange(guiOption.updateCone);
+    ['motorTargetX', 'motorTargetY', 'motorTargetZ'].forEach(key => {
+      coneTwistFolder.add(guiOption, key, -50, 50).onChange(guiOption.updateCone)
+    })
 
-    // const sphereFolder = gui.addFolder('spheres');
-    // ['clearMeshes', 'addSphere'].forEach(key => {
-    //   sphereFolder.add(guiOption, key).onChange(guiOption.updateMotor)
-    // })
+    const sphereFolder = gui.addFolder('spheres');
+    ['clearMeshes', 'addSpheres'].forEach(key => {
+      sphereFolder.add(guiOption, key).onChange(guiOption.updateMotor)
+    })
   }
 }
 
@@ -172,7 +175,7 @@ function initPhysics() {
 function createField() {
   const flipper = {};
 
-  let positions = [[0, - 0.5, 0], [-31, .5, 0], [31, .5, 0], [0, .5, 30], [0, .5, -30]];
+  let positions = [[0, -0.5, 0], [-31, .5, 0], [31, .5, 0], [0, .5, 30], [0, .5, -30]];
   ['plane', 'borderLeft', 'borderRight', 'borderTop', 'borderBottom'].forEach((key, index) => {
     let body = [64, 3, 2]
     if (key === 'plane') {
@@ -265,34 +268,43 @@ function createConeTwist() {
   const armMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 12, 3), new THREE.MeshPhongMaterial({
     color: 0x4444ff, transparent: true, opacity: .7
   }))
-  const objectOne = createRigidBody(baseMesh, new Ammo.btSphereShape(1), 0, new THREE.Vector3(20, 15.5, 0))
+  const objectOne = createRigidBody(baseMesh, new Ammo.btSphereShape(1), 0, new THREE.Vector3(20, 14.5, -20))
 
-  const objectTwo = createRigidBody(armMesh, new Ammo.btSphereShape(1), 10, new THREE.Vector3(20, 7.5, 0))
-  const constraint = new Ammo.btConeTwistConstrain(objectOne, objectTwo, objectOne.position)
+  const objectTwo = createRigidBody(armMesh, new Ammo.btBoxShape(new Ammo.btVector3(1, 6, 1.5)), 0.1, new THREE.Vector3(20, 2.5, -20), quat)
+  const constraint = new Ammo.btConeTwistConstraint(objectTwo, objectOne, objectTwo.getWorldTransform(), objectOne.getWorldTransform())
   constraint.setLimit(.5 * Math.PI, .5 * Math.PI, .5 * Math.PI)
-  constraint.setMaxMotorImpulse(1)
-  constraint.setMotorTarget(new THREE.Vector3(0, 0, 0))
+  constraint.setMaxMotorImpulse(10)
+  constraint.setMotorTarget(new Ammo.btQuaternion(1, 1, 1, 1))
   return constraint
 }
 
 function createPointToPoint() {
-  const obj = new THREE.Mesh(new THREE.SphereGeometry(2), new THREE.MeshPhongMaterial({
-    color: 0xff4444, transparent: true, opacity: .7
-  }))
   const flipper = {};
 
-  let positions = [[-10, 2, -18], [-20, 2, -5]];
+  let positions = [[-10, 1, -18], [-20, 1, -5]];
   let size = [2, 2];
 
   ['one', 'two'].forEach((key, index) => {
     const obj = new THREE.Mesh(new THREE.SphereGeometry(size[index]), new THREE.MeshPhongMaterial({
       color: 0xff4444, transparent: true, opacity: .7
     }))
-    const shape = new Ammo.btSphereShape(size[idnex])
+    const shape = new Ammo.btSphereShape(size[index])
     flipper[key] = createRigidBody(obj, shape, .3, new THREE.Vector3(...positions[index]))
   })
-  const constraint = new Ammo.btPointConstraint(flipper.one, flipper.two, flipper.two.position)
-  physicsWorld.addConstraint(constraint)
+  const constraint = new Ammo.btPoint2PointConstraint(flipper.two, flipper.one, new Ammo.btVector3(...positions[1]), new Ammo.btVector3(...positions[0]))
+  physicsWorld.addConstraint(constraint, true)
+  setTimeout(() => {
+    constraint.setPivotA(new Ammo.btVector3(-10, 1, -8))
+  }, 5000);
+  setTimeout(() => {
+    constraint.setPivotB(new Ammo.btVector3(-20, 1, -9))
+  }, 10000);
+  constraint.setBreakingImpulseThreshold(10000)
+  let setting = new Ammo.btConstraintSetting()
+  setting.set_m_tau(10)
+  setting.set_m_damping(0.5)
+  setting.set_m_impulseClamp(-1000000)
+  constraint.set_m_setting(setting)
   return constraint
 }
 
@@ -333,29 +345,21 @@ function createLeftFlipper() {
 }
 
 function createSilderBottom() {
-  const sliderCube = createParalellepiped(12, 2, 2, 0.01, new THREE.Vector3(6, 1.5, 20), quat, new THREE.MeshPhongMaterial({ color: 0x44ff44, opacity: .6, transparent: true }))
+  const sliderCube = createParalellepiped(12, 2, 2, 0.01, new THREE.Vector3(6, 10.5, 10), quat, new THREE.MeshPhongMaterial({ color: 0x44ff44, opacity: .6, transparent: true }))
 
-  const constraint = new Ammo.btSliderConstraint(sliderCube, new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0))
-  console.log('show 111', constraint)
+  const constraint = new Ammo.btSliderConstraint(sliderCube.userData.physicsBody, sliderCube.userData.physicsBody.getWorldTransform(), true)
   physicsWorld.addConstraint(constraint)
-  constraint.setLowerLinLimit(-10)
-  constraint.setUpperLinLimit(10)
-  // constraint.setRestitution(.1, .1)
+  constraint.setLowerAngLimit(5)
+  constraint.setUpperLinLimit(-5)
   return constraint
 }
 
 
 function createSilderTop() {
-  const sliderCube = createParalellepiped(7, 2, 7, 0.01, new THREE.Vector3(-20, 1.5, -15), quat, new THREE.MeshPhongMaterial({ color: 0x44ff44, opacity: .6, transparent: true }))
+  const sliderCube = createParalellepiped(4, 2, 3, 10, new THREE.Vector3(-20, 1.1, -18), quat, new THREE.MeshPhongMaterial({ color: 0x44ff44, opacity: .6, transparent: true }))
 
-  const constraint = new Ammo.btSliderConstraint(sliderCube, new THREE.Vector3(-10, 0, 20), new THREE.Vector3(Math.PI / 2, 0, 0))
+  const constraint = new Ammo.btSliderConstraint(sliderCube.userData.physicsBody, sliderCube.userData.physicsBody.getWorldTransform(), true)
   physicsWorld.addConstraint(constraint)
-  constraint.setLowerLinLimit(-20)
-  constraint.setUpperLinLimit(10)
-  constraint.setLowerAngLimit(-.5)
-  constraint.setUpperAngLimit(.5)
-  // constraint.setLimit(-20, 10, 0.5, -0.5)
-  // constraint.setRestitution(.2, .1)
   return constraint
 }
 
