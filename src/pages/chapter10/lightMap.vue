@@ -42,7 +42,6 @@ function createSomething() {
     map: wood
   })
 
-  console.log('show dat', groundGeom.faceVertexUvx)
   // groundGeom.faceVertexUvx[1] = groundGeom.faceVertexUvx[0]
 
   const groundMesh = new THREE.Mesh(groundGeom, groundMaterial)

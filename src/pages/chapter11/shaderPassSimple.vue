@@ -117,7 +117,6 @@ function createSomething() {
     mtlLoader.load('src/assets/sol/LibertStatue.mtl', material => {
       const objLoader = new OBJLoader()
       objLoader.load('src/assets/sol/LibertStatue.obj', result => {
-        console.log('shwo', result)
         result.children.forEach(child => {
           child.castShadow = true
         })

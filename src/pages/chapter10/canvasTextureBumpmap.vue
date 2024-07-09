@@ -14,7 +14,6 @@ function dealPerlin() {
   canvas.setAttribute('width', 256)
   canvas.setAttribute('height', 256)
   const box = $('#literallyBox')
-  console.log('show daian', box)
   box.append(canvas)
   ctx = canvas.getContext('2d')
   const date = new Date()

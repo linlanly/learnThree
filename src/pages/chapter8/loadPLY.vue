@@ -79,7 +79,6 @@ function createSomething() {
   mesh = new THREE.Object3D()
   let loader = new PLYLoader()
   loader.load('/src/assets/test.ply', function(geometry) {
-    console.log('show',geometry)
     let material = new THREE.PointsMaterial({
       color: 0xff44ff,
       blending: THREE.AdditiveBlending,

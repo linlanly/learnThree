@@ -18,7 +18,6 @@ function createParticles() {
   material.map.offset = new THREE.Vector2(0.2 * controls.sprite, 0)
   material.map.repeat = new THREE.Vector2(.2, 1)
   material.depthTest = false
-  console.log('show', material)
 
   let sprite = new THREE.Sprite(material)
   sprite.position.set(100, 150, -10)

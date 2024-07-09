@@ -42,7 +42,6 @@ function createSomething() {
   mesh.rotation.y = .2 * Math.PI
   mesh.rotation.x = .2 * Math.PI
   scene.add(mesh)
-  console.log('show data', geometry)
 
   orbitControl = new OrbitControls(camera, renderer.domElement)
   orbitControl.listenToKeyEvents(window)

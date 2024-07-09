@@ -28,7 +28,6 @@ function createSomething() {
   let groundGeometry = new THREE.PlaneGeometry(14, 14, 4, 4)
 
   let cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x7777ff })
-  console.log(cubeMaterial)
   sphere = new THREE.Mesh(sphereGeometry, cubeMaterial)
   ground = new THREE.Mesh(groundGeometry, cubeMaterial)
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
@@ -83,7 +82,6 @@ function createSomething() {
     let gui = initGUI(controls)
     gui.add(controls, 'opacity', 0, 1).onChange(function (e) {
       cubeMaterial.opacity = e
-      console.log('shihihi', cubeMaterial)
     })
     gui.add(controls, 'transparent').onChange(function (e) {
       cubeMaterial.transparent = e

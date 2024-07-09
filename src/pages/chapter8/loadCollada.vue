@@ -34,7 +34,6 @@ function createSomething() {
   let loader = new ColladaLoader()
   loader.load('/src/assets/Truck_dae.dae', function(result) {
     mesh = result.scene.children[0].children[0].clone()
-    console.log('show datainfo', result)
     scene.add(mesh)
   })
 

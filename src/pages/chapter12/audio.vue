@@ -43,7 +43,6 @@ function createSomething() {
 
     object[`sound${key}`] = new THREE.Audio(object[`listener${key}`]);
     new THREE.AudioLoader().load(`src/assets/audio/${key}.ogg`, (buffer) => {
-      console.log('more', object[`sound${key}`])
       object[`sound${key}`].setBuffer(buffer)
       object[`sound${key}`].setLoop(true)
       object[`mesh${key}`].add(object[`sound${key}`])
@@ -52,7 +51,6 @@ function createSomething() {
   })
 
   const helper = new THREE.GridHelper(500, 10)
-  console.log('show', helper)
   helper.position.y = .1
   scene.add(helper)
 
@@ -69,16 +67,11 @@ function createSomething() {
 
     let isPlay = false
     doc.addEventListener('click', function () {
-      if (!isPlay) {
-        ['cow', 'dog', 'cat'].forEach(key => {
-          object[`sound${key}`].play()
-        })
-        isPlay = true
-      }
-      
       ['cow', 'dog', 'cat'].forEach(key => {
-          console.log(object[`sound${key}`])
-        })
+        !isPlay && object[`sound${key}`].play()
+        isPlay && object[`sound${key}`].stop()
+        isPlay = !isPlay
+      })
     })
   }
 }

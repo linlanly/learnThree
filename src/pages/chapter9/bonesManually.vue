@@ -39,7 +39,6 @@ function createGeometry(sizing) {
     vertex.fromBufferAttribute(position, i)
 
     let y = (vertex.y + sizing.halfHeight)
-    console.log('show da', vertex.y, y, sizing.halfHeight)
     let skinIndex = Math.floor(y / sizing.segmentHeight)
     let skinWeight = (y % sizing.segmentHeight) / sizing.segmentHeight
 

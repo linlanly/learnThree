@@ -11,7 +11,6 @@ let orbitControl, scene, clock, controls, cube, canvas
 function dealLiterally() {
   canvas = document.createElement('canvas')
   const box = $('#literallyBox')
-  console.log('show daian', box)
   box.append(canvas)
   box.literallycanvas({ imageURLPrefix: 'src/utils/literally/img' })
 }

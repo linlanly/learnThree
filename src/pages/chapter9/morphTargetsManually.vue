@@ -6,7 +6,6 @@ import { GUI } from "three/addons/libs/lil-gui.module.min.js"
 import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect'
 let cube, pointLight, controls
 function createSomething() {
-  console.log('sho ,', AsciiEffect)
   let scene = new THREE.Scene()
   let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000)
 

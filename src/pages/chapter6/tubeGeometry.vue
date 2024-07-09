@@ -85,7 +85,6 @@ function createSomething() {
             data[key] = controls[key]
           }
         })
-        console.log('show number', controls.numberOfPoints)
         generatePoints(data)
       }
     }

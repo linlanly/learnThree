@@ -6,7 +6,6 @@ import { GUI } from "three/addons/libs/lil-gui.module.min.js"
 import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect'
 let sphereLightMesh, pointLight
 function createSomething() {
-  console.log('sho ,', AsciiEffect)
   let scene = new THREE.Scene()
   let camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, .1, 1000)
 
@@ -74,7 +73,6 @@ function createSomething() {
   // pointLight.distance = 0
   // pointLight.angle = .4
   scene.add(pointLight)
-  console.log('show data', pointLight.shadow)
 
   let sphereLight = new THREE.SphereGeometry(.2)
   let sphereLightMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })

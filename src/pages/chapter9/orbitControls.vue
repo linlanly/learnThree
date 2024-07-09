@@ -48,7 +48,6 @@ function createSomething() {
 
   let sphere = createMesh(new THREE.SphereGeometry(20, 40, 40))
   scene.add(sphere)
-  console.log('show ', sphere)
 
   orbitControl = new OrbitControls(camera, renderer.domElement)
   orbitControl.autoRotate = true

@@ -557,7 +557,6 @@ function createNewObject() {
 
   const crossbeam = createParalellepiped(pw, w, l, mass * 0.25, pos, quat, material, friction, restitution);
   const basePos = crossbeam.position.clone();
-  console.log('show ', basePos)
   pos.set(basePos.x, pw / 2, basePos.z - l / 2 + pw / 4 - h / 2);
   const hangA = createWheelNew(pw / 2, h, mass, pos, quat, material)
 

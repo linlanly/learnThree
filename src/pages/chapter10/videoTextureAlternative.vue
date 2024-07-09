@@ -26,7 +26,6 @@ function createMesh(geometry) {
       materialArray.push(new THREE.MeshBasicMaterial({ color: 0x0051ba }))
     }
   }
-  console.log('show datainfo', materialArray)
   return new THREE.Mesh(geometry, materialArray)
 }
 

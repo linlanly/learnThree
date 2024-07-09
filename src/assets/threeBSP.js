@@ -387,7 +387,6 @@ class ThreeBSP {
       return treeIsh;
     }
     polygons = [];
-    console.log('', treeIsh)
     geometry = treeIsh instanceof THREE.BufferGeometry ? treeIsh : treeIsh instanceof THREE.Mesh ? (treeIsh.updateMatrix(), this.matrix = treeIsh.matrix.clone(), treeIsh.geometry) : void 0;
     _ref = geometry.attributes.position;
     _uv = geometry.attributes.uv;
@@ -410,7 +409,6 @@ class ThreeBSP {
           polygon.vertices.push(vertex);
         }
       }
-      console.log('ffjff', face, polygon.vertices)
       return polygons.push(polygon.calculateProperties());
     };
     polygon = new Polygon();

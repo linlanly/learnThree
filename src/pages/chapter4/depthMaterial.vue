@@ -22,7 +22,6 @@ function createSomething() {
   camera.position.y = 40
   camera.position.z = 50
   camera.lookAt(scene.position)
-  console.log('show data info', camera)
 
   let doc = document.getElementById('threeDoc')
   if (doc) {
@@ -66,7 +65,6 @@ function createSomething() {
     gui.add(controls, 'removeCube')
     gui.add(controls, 'cameraNear', 0, 50).onChange(function(e) {
       camera.near = e
-      console.log('change data', e, camera)
     })
     gui.add(controls, 'cameraFar', 50, 200).onChange(function(e) {
       camera.far = e

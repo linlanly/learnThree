@@ -110,7 +110,6 @@ function createSomething() {
 
           } else {
             result = resultbsp.toMesh()
-            console.log('????', result)
             result.geometry.computeFaceNormals()
             result.geometry.computeVertexNormals()
             scene.add(result)

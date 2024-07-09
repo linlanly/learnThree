@@ -118,7 +118,6 @@ function createBones() {
   // let nextBone = dealBone('Bone')
   // preBone.add(nextBone)
   // preBone = nextBone
-  // console.log("show", preBone)
   // for (let i = 0; i < handBones.length; i++) {
   //   if (handBones[i].name !== 'Bone') {
   //     let bone = new THREE.Bone()
@@ -132,7 +131,6 @@ function createBones() {
   // }
   let newBones = []
   dealTree(tree, newBones)
-  console.log('show deal data', newBones)
   return newBones
 }
 
@@ -198,7 +196,6 @@ function createSomething() {
     let loader = new OBJLoader()
     loader.setMaterials(material)
     loader.load('/src/assets/hand.obj', function (loadMesh) {
-      console.log('show data', loadMesh)
       let material = new THREE.MeshLambertMaterial({ color: 0xf0c8c9, skinning: true })
       let geometry = loadMesh.children[0].geometry
       geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(handJson.skinIndices, 4))

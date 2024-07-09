@@ -51,7 +51,6 @@ function createMesh(geom) {
 }
 
 function createLine(shape, spaced) {
-  console.log(shape);
   if (!spaced) {
     let points = shape.extractPoints(10)
     let dataList = []

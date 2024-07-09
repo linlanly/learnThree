@@ -55,7 +55,6 @@ function createSomething() {
   camera.position.y = 30
   camera.position.z = 40
   camera.lookAt(new THREE.Vector3(10, 0, 0))
-  console.log('show data info', camera)
 
   let ambientLight = new THREE.AmbientLight(0x0c0c0c)
   scene.add(ambientLight)

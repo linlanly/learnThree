@@ -61,7 +61,6 @@ function createSomething() {
       },
       save() {
         let result = plane.toJSON()
-        console.log('show data', result)
         localStorage.setItem('json', JSON.stringify(result))
       },
       load() {

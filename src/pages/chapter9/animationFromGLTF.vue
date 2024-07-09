@@ -52,7 +52,6 @@ function createSomething() {
   loader.load('src/assets/Bee.glb', (result) => {
     let mesh = result.scene.children[0].children[1].children[0].children[0]
     scene.add(result.scene)
-    console.log('show datain', result, mesh)
 
     mixer = new THREE.AnimationMixer(result.scene)
     let clip = result.animations[0]
@@ -63,7 +62,6 @@ function createSomething() {
   })
 
 
-  console.log(loader, loader.load)
   let doc = document.getElementById('threeDoc')
   if (doc) {
     let stats = initStats()

@@ -13,7 +13,6 @@ let number = ref(0)
 let scene = null, planeGeometry = null, renderer, camera, plane, controls, stats
 
 function createSomething() {
-  console.log('sho ,', AsciiEffect)
   scene = new THREE.Scene()
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000)
   
@@ -95,7 +94,6 @@ function addCubeElement() {
   cube.castShadow = true
   cube.name = 'cube-' + scene.children.length
   cube.position.set(Math.round(Math.random() * planeGeometry.parameters.width), Math.round(Math.random() * 5), -20 + Math.round(Math.random() * planeGeometry.parameters.height))
-  console.log(planeGeometry)
   scene.add(cube)
   number.value = scene.children.length
 }
@@ -160,7 +158,6 @@ for ( let i = 0; i < 10; i ++ ) {
 
   geoms.push(new THREE.OctahedronGeometry(3))
 
-  console.log('show', THREE, THREE.ParametricGeometries)
   geoms.push(new ParametricGeometry(ParametricGeometries.mobius3d, 20, 10))
   geoms.push(new THREE.TetrahedronGeometry(3))
   geoms.push(new THREE.TorusGeometry(2.1, 4, 3, 14))

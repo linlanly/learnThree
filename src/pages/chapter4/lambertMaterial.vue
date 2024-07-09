@@ -28,7 +28,6 @@ function createSomething() {
   let groundGeometry = new THREE.PlaneGeometry(14, 14, 4, 4)
 
   let cubeMaterial = new THREE.MeshPhongMaterial({ color: 0x7777ff })
-  console.log('???', cubeMaterial)
   sphere = new THREE.Mesh(sphereGeometry, cubeMaterial)
   ground = new THREE.Mesh(groundGeometry, cubeMaterial)
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial)

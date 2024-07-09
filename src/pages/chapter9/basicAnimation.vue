@@ -14,7 +14,6 @@ function onDocumentMouseDown(event) {
   let intersects = raycaster.intersectObjects([sphere, cylinder, cube])
   if (intersects.length > 0) {
     intersects[0].object.material.opacity = .1
-    console.log('show datainfo 2233', intersects[0].object)
   }
 }
 

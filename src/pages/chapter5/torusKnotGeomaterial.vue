@@ -43,7 +43,6 @@ function createSomething() {
     let stats = initStats()
 
     let keys = ['radius', 'tube', 'arc', 'radialSegments', 'tubularSegments', 'p', 'q', 'heightScale']
-    console.log('??/?', plane.children[0].geometry.parameters)
     keys.forEach(key => {
       controls[key] = plane.children[0].geometry.parameters[key]
     })

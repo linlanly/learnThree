@@ -61,7 +61,6 @@ function createSomething() {
     const renderPass = new RenderPass(scene, camera)
     const effectFilm = new FilmPass(.8, false, 256, .325)
     effectFilm.renderToScreen = true
-    console.log('show datainfo', effectFilm)
 
     composer = new EffectComposer(renderer)
     composer.addPass(renderPass)

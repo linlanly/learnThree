@@ -87,7 +87,6 @@ function createSomething() {
   // pointLight.distance = 0
   // pointLight.angle = .4
   scene.add(pointLight)
-  console.log('show data', hemiLight)
 
   let sphereLight = new THREE.SphereGeometry(.2)
   let sphereLightMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 })

@@ -16,7 +16,6 @@ function createMesh(geom) {
 function test() {
   let url = '../../../../index.html'
   let content = url.search(/\/[^\.]/)
-  console.log(content)
 }
 function createSomething() {
   test()
@@ -50,7 +49,6 @@ function createSomething() {
     let stats = initStats()
 
     let keys = ['innerRadius', 'outerRadius', 'thetaSegments', 'phiSegments', 'thetaStart', 'thetaLength']
-    console.log('??/?', plane.children[0].geometry.parameters)
     keys.forEach(key => {
       controls[key] = plane.children[0].geometry.parameters[key]
     })

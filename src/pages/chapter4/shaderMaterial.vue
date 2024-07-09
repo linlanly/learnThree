@@ -322,7 +322,6 @@ function createSomething() {
   })
   cube = new THREE.Mesh(cubeGeometry, mats)
   scene.add(cube)
-  console.log('show datainf', cube)
 
   camera.position.x = 30
   camera.position.y = 30
