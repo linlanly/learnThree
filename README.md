@@ -1,6 +1,7 @@
-# vue-project
+# learnThree
 
-This template should help get you started developing with Vue 3 in Vite.
+《three.js开发指南》的示例代码，书籍和github的three.js版本为0.69，本项目使用是版本是0.164
+chapter*文件夹对应github的示例代码，demo为对three.js的运用
 
 ## Recommended IDE Setup
 
